@@ -1,0 +1,46 @@
+version: '3.3'
+services:
+  # NGINX webservers with nginx-demo hello page
+  nginx1:
+      hostname: nginx1
+      build: nginx-hello
+      expose:
+        - "80"
+  nginx2:
+      hostname: nginx2
+      build: nginx-hello
+      expose:
+        - "80" 
+ #  nginx3:
+ #     hostname: nginx3
+ #     build: nginx-hello
+ #     expose:
+ #       - "80"
+  # NGINX Plus Load Balancer       
+  nginx-app-protect:
+      hostname: nginx-app-protect
+      build: nginx-app-protect
+      links:
+          - nginx1:nginx1
+          - nginx2:nginx2
+#          - nginx3:nginx3
+      volumes:
+          - ./nginx-app-protect/etc/nginx/conf.d:/etc/nginx/conf.d
+      ports:
+          - 8080:8080
+          - 80:80
+          - 443:443
+      restart: always
+  elasticsearch:
+      hostname: elk-stack
+      image: sebp/elk:742
+      restart: always
+      volumes:
+          - ./logstash/conf.d:/etc/logstash/conf.d:ro
+          - elk:/var/lib/elasticsearch
+      ports:
+          - 9200:9200
+          - 5601:5601
+          - 5144:5144
+volumes:
+  elk:

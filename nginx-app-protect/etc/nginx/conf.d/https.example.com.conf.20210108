@@ -1,0 +1,42 @@
+# www.example.com HTTPS
+
+server {
+
+    proxy_cache_key "$scheme$request_method$host$request_uri$content_length";
+  
+    listen 443 ssl;
+    server_name www2.example.com;
+    ssl_certificate /etc/ssl/example.com.crt;
+    ssl_certificate_key /etc/ssl/example.com.key;
+    location / {
+
+        proxy_pass http://nginx_hello;
+
+        # Default is HTTP/1, keepalive is only enabled in HTTP/1.1
+        proxy_http_version 1.1;
+
+        # Remove the Connection header if the client sends it,
+        # it could be "close" to close a keepalive connection
+        proxy_set_header Connection "";
+
+        health_check interval=2s fails=1 passes=5 uri=/ match=statusok;
+    }
+
+    location /old-url {
+        return 301 https://$host/new-url;
+    }
+
+    location /smile.png {
+       proxy_ignore_headers Cache-Control;
+       proxy_cache_methods GET HEAD POST;
+       proxy_pass http://nginx_hello;
+       proxy_cache my_cache;
+       add_header X-Cache-Status $upstream_cache_status;
+       }
+}
+
+match statusok {
+       # just check for 200 ok
+       status 200;
+}
+

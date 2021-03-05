@@ -1,0 +1,15 @@
+#terraform
+*/.terraform
+*.tfstate*
+
+configs/ansible/*.yaml
+configs/dnsmasq/*.hosts
+configs/kube/*.json
+configs/ssh/ssh.cfg
+
+#certs and keys
+*ginx-repo.crt
+*ginx-repo.key
+*.pem
+controller/*.txt
+controller/*.tar.gz
