@@ -30,3 +30,5 @@ Once the containers are running:
 sh ./load_logs.sh
 ```
 This script sends repeated requests using curl to the NGINX App Protect instance.  Some of the requests will be detected as malicious and blocked by the WAF.  You can see the requests by accessing the ELK Stack at http://localhost:5601.  You will need to look at the Dashboard>>Overview page to see graphs.  For more information about the ELK Stack, please refer to: [devCentral Github](https://github.com/f5devcentral/f5-waf-elk-dashboards)
+
+**Warning** there is limited space in the ELK container for logs - do not run the script above for more than a minute or so.  If you run into issues, clear the log index (Management>>Elasticserach--Index Management>>Manage Index..Delete Index)
