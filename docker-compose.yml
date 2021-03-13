@@ -5,42 +5,32 @@ services:
       hostname: nginx1
       build: nginx-hello
       expose:
-        - "80"
+        - "80"     
   nginx2:
       hostname: nginx2
       build: nginx-hello
       expose:
-        - "80" 
- #  nginx3:
- #     hostname: nginx3
- #     build: nginx-hello
- #     expose:
- #       - "80"
-  # NGINX Plus Load Balancer       
+        - "80"  
   nginx-app-protect:
       hostname: nginx-app-protect
       build: nginx-app-protect
       links:
           - nginx1:nginx1
           - nginx2:nginx2
-#          - nginx3:nginx3
       volumes:
           - ./nginx-app-protect/etc/nginx/conf.d:/etc/nginx/conf.d
       ports:
           - 8080:8080
           - 80:80
           - 443:443
+          - protocol: udp
+            published: 1053
+            target: 53
       restart: always
-  elasticsearch:
-      hostname: elk-stack
-      image: sebp/elk:742
-      restart: always
-      volumes:
-          - ./logstash/conf.d:/etc/logstash/conf.d:ro
-          - elk:/var/lib/elasticsearch
-      ports:
-          - 9200:9200
-          - 5601:5601
-          - 5144:5144
-volumes:
-  elk:
+  dns_bind:
+    hostname: bind-01
+    image: internetsystemsconsortium/bind9:9.11
+    volumes: 
+        - ./bind-base/etc/bind:/etc/bind
+    expose:
+        - "53"
