@@ -3,6 +3,11 @@ Demo for DNS LB - with health check
 
 The infrastructure is based on a simple load-balancing of 2 Web Server (not really needed for the purposes of the demo as of 03/12/2021 but this is to be expanded)
 
+To build this lab:
+- ensure that docker is running on the system
+- download the file (git clone or zip)
+- copy valid repo.cert and repo.key files in the nginx-app-protect/etc/ssl/nginx directory
+
 To run the demo: 
 - Start the Docker environment that consists of: 
     - 1x NGINX Plus instance with App Protect
@@ -28,7 +33,8 @@ Once the containers are running:
 - verify that the site is available by pointing a browser (curl or chrome) to: https://localhost
 - verify that the DNS proxy is currently working - from the cli: dig www.example.com @localhost -p 1053
 - check that the NGINX Plus instance is processing traffic by inspecting the dashboard at: http://localhost:8080
-- you can now run a script to generate good and bad traffic using the load_logs.sh script:
+- you can now run a script to generate good and bad traffic using the load_logs.sh script as well (if needed)
+- connect to the stats interface http://localhost:8080 - you will see the health checking. 
 ```bash
 sh ./load_logs.sh
 ```
@@ -63,4 +69,4 @@ stream {
 
 Where the “\x44\x1c\x01\...” string comes from Wireshark.  
 The nice thing is that you can grab the contents directly from Wireshark by exporting as *'escaped string'*.  
-For the \x03\x6e\x73\x32\xc0 portion of the “expect mantra” – same principle as above – just took a portion of the DNS response to matched against. 
+For the \x03\x6e\x73\x32\xc0 portion of the “expect mantra” – same principle as above – just took a portion of the DNS response to match against. 
